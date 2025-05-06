@@ -1,17 +1,14 @@
 require 'sinatra/base'
 require 'json'
 
-class NarutoApp < Sinatra::Base
-  # this symbols help us to the json parse
-  set :show_exceptions, :after_handler
-
+class NarutoApp < Sinatra::Base # in the previous class we saw an example using this, but why to use ::Base?
   @@characters ||= {
     '1' => { 'id' => '1', 'name' => 'Naruto', 'village' => 'Konoha', 'level' => 'kage' },
     '2' => { 'id' => '2', 'name' => 'Sasuke', 'village' => 'Konoha', 'level' => 'Kage' },
     '3' => { 'id' => '3', 'name' => 'Shikamaru', 'village' => 'Konoha', 'level' => 'Jounin' }
   }
 
-  # this is for parse the request
+  # this is for parse the request to ruby object
   def parse_body
     @payload ||= begin
       body = request.body.read
@@ -20,10 +17,12 @@ class NarutoApp < Sinatra::Base
   end
 
   # READ
+  # get all the characters
   get '/characters' do
     content_type :json
     @@characters.values.to_json
   end
+  # get an specific character
   get '/characters/:id' do
     content_type :json
     character = @@characters[params[:id]]
@@ -36,7 +35,8 @@ class NarutoApp < Sinatra::Base
     end
   end
 
-  # CREATE A NEW CHARACTER
+  # CREATE
+  # create a new character
   post '/characters' do
     content_type :json
     payload = parse_body
@@ -58,6 +58,7 @@ class NarutoApp < Sinatra::Base
   end
 
   # UPDATE
+  # uodate a character
   put '/characters/:id' do
     content_type :json
     character = @@characters[params[:id]]
@@ -74,6 +75,7 @@ class NarutoApp < Sinatra::Base
   end
 
   # DELETE
+  # delete a character
   delete '/characters/:id' do
     content_type :json
     character = @@characters[params[:id]]
